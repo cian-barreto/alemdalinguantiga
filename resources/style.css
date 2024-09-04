@@ -1,0 +1,490 @@
+/* Declarações globais */
+:root {
+  --img-wood: url("imgs/wood.jpg");
+  --img-paper1: url("imgs/paper1.jpg");
+  --img-paper2: url("imgs/paper2.jpg");
+  --img-texture: url("imgs/text_texture.jpg");
+
+  --main-color: #351a12;
+  --secondary-color: #beb49f;
+
+  font-family: "Platypi", serif;
+}
+
+/* >>> FORMATAÇÃO DE ELEMENTOS <<< */
+
+/* Cria as texturas de papel */
+.papel1,
+.papel2 {
+
+  position: relative;
+
+  /* Ativa o pseudoelemento onde o background será desenhado */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* Traz os elementos filho para frente do background */
+  &>* {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Papel tipo 1 */
+  &.papel1::before {
+    background: #bcb19b var(--img-paper1) top center/1200px;
+    box-shadow: 0 0 30px #351a12 inset;
+    filter: url(#borda-rasgada-curta) drop-shadow(2px 2px 30px #301d0abe);
+  }
+
+  /* Papel tipo 2 */
+  &.papel2::before {
+    background: #fbfbfb var(--img-paper2) top center/cover;
+    box-shadow: 0 0 10px #706a5550 inset;
+    filter: url(#borda-rasgada-longa) drop-shadow(2px 2px 10px #301d0a70);
+  }
+}
+
+/* Negrita links */
+a {
+  font-weight: 600
+}
+
+/* Texturiza as letras */
+h1,
+h2,
+h3,
+p,
+span,
+[role="textbox"] {
+  background-image: var(--img-texture);
+  background-size: 300px;
+  -moz-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+/* Define tamanho das letras */
+p,
+span,
+button,
+[role="textbox"] {
+
+  font-size: 12pt;
+
+  @media (max-width: 720px) {
+    font-size: 11pt;
+  }
+}
+
+/* Formata o campo custom de texto */
+div[role="textbox"] {
+
+  padding: 0 15px 15px 15px;
+  border-bottom: 2px solid var(--main-color);
+
+  &:focus {
+    outline: none;
+  }
+
+  &[data-value=""] {
+    &::before {
+      content: "Digite aqui seu texto";
+    }
+  }
+}
+
+/* Formata o checkbox */
+label:has([type="checkbox"]) {
+
+  display: flex;
+  align-items: center;
+
+  /* Cria um checkbox customizado */
+  &::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    margin: 4px 10px 0 0;
+    outline: 2px solid var(--main-color);
+    border: 2px solid var(--secondary-color);
+    background: var(--secondary-color);
+    transition: 150ms ease-in-out;
+    cursor: pointer;
+  }
+
+  /* Oculta checkbox original */
+  & input {
+    display: none;
+  }
+
+  /* Destaca ponteiro no rótulo */
+  & span {
+    cursor: pointer;
+    transition: 150ms ease-in-out;
+  }
+
+  &:has(input:checked) {
+
+    /* Marca o checkbox customizado */
+    &::before {
+      background: var(--main-color);
+    }
+
+    /* Negrita rótulo */
+    & span {
+      font-weight: 600;
+    }
+  }
+
+}
+
+/* Formata botões */
+button,
+.button {
+
+  background: var(--img-texture);
+  color: var(--secondary-color);
+
+  font-family: "Platypi", serif;
+  font-weight: 600;
+  text-decoration: none;
+
+  border: none;
+  border-radius: 5px;
+
+  margin: 0 auto;
+  padding: 7px 21px;
+
+  transition: 150ms ease-in-out;
+
+  /* Oculta botão sem link */
+  &[href=""] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Realça botão quando mouse sobrepor */
+  &:hover {
+    opacity: 70%;
+    cursor: pointer;
+  }
+}
+
+
+/* >>> FORMATAÇÃO DO SITE <<< */
+
+body {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0;
+  padding: 20px;
+
+  background: #af896f var(--img-wood) center center/cover no-repeat fixed;
+  min-height: calc(100vh - 40px);
+
+  @media (max-width: 720px) {
+    padding: 5px;
+    min-height: calc(100vh - 10px);
+  }
+
+}
+
+/* Exibe conteúdo da página quando estiver carregada */
+body {
+
+  #conteudo {
+    opacity: 0%;
+    transition: 500ms ease-in-out;
+  }
+
+  #loading {
+    transition: 1s ease-in-out;
+  }
+
+  &.loaded #conteudo {
+    opacity: 100%;
+  }
+
+  &.loaded #loading {
+    opacity: 0%;
+  }
+}
+
+/* Tela de carregamento */
+#loading {
+
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* Logo Chrys */
+  & img {
+    width: 200px;
+    max-width: 80vw;
+  }
+
+  /* Barra de loading */
+  & .loadingBar {
+    width: 200px;
+    max-width: 80vw;
+    background-color: #d8d8d890;
+    height: 10px;
+    border-radius: 10px;
+    animation: animLoadingBar 1s ease-in-out infinite alternate;
+  }
+}
+
+/* Animação da barra de loading */
+@keyframes animLoadingBar {
+  0% {
+    margin-left: 0%;
+    width: 10px;
+  }
+
+  50% {
+    width: 60px;
+  }
+
+  100% {
+    margin-left: calc(100% - 10px);
+    width: 10px;
+  }
+}
+
+.vinheta {
+
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  
+  pointer-events: none;
+  background: radial-gradient(rgba(0, 0, 0, 0%) 20%, rgba(0, 0, 0, 80%) 100%);
+}
+
+#conteudo {
+
+  width: calc(100% - 80px);
+  padding: 40px;
+  max-width: 900px;
+
+  @media (max-width: 720px) {
+    width: calc(100% - 60px);
+    padding: 30px;
+  }
+}
+
+header {
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  & img {
+    width: 250px;
+    max-width: 40%;
+  }
+
+  & h1 {
+
+    font-size: 30pt;
+    padding-bottom: 15pt;
+    text-align: center;
+
+    @media (max-width: 720px) {
+      font-size: 25pt;
+    }
+  }
+
+  @media (max-width: 720px) {
+
+    flex-direction: column;
+    gap: 0px;
+
+    & img {
+      max-width: 100%;
+    }
+
+    & h1 {
+      margin: 0;
+    }
+  }
+}
+
+section {
+
+  & span[redacted] {
+
+    display: inline-block;
+
+    font-family: "Redacted Script";
+    position: relative;
+    font-weight: 600;
+    -moz-text-fill-color: var(--main-color);
+    -webkit-text-fill-color: var(--main-color);
+
+    &::selection {
+      background-color: #65698c;
+    }
+
+    &::before{
+      content: attr(redacted);
+      width: 100%;
+      text-wrap: nowrap;
+      overflow: hidden;
+      position: absolute;
+      top: -5px;
+      font-family: "Platypi", serif;
+      font-weight: 400;
+      opacity: 100%;
+    }
+  }
+}
+
+form#tradutor {
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: top;
+  gap: 10px;
+
+  &>* {
+    width: 50%;
+  }
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+
+    &>* {
+      width: 100%;
+    }
+  }
+
+}
+
+.camposForm {
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+
+  p:has(#LATranslated) {
+    overflow-wrap: break-word
+  }
+}
+
+.containerLA {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.LAImages {
+
+  width: 100%;
+  height: 100%;
+
+  max-height: 300px;
+  max-width: 300px;
+
+  aspect-ratio: 1 / 1;
+
+  rotate: 5deg;
+  overflow: visible;
+
+  position: relative;
+
+  @media (max-width: 720px) {
+    width: 90%;
+    height: 90%;
+  }
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+  }
+
+  &:has([data-type="new"]) {
+
+    img[data-type="old"] {
+      animation: 5s ease-in-out animTranslateOld;
+    }
+
+    img[data-type="new"] {
+      animation: 5s ease-in-out animTranslateNew;
+    }
+
+  }
+
+}
+
+/* Animação para imagem anterior */
+@keyframes animTranslateOld {
+  0% {
+    opacity: 100%;
+    rotate: 0deg;
+    filter: blur(0px)
+  }
+
+  30% {
+    opacity: 0%;
+  }
+
+  60% {
+    rotate: 1080deg;
+    opacity: 0%;
+    filter: blur(100px)
+  }
+
+  100% {
+    rotate: 1080deg;
+    opacity: 0%;
+    filter: blur(100px)
+  }
+}
+
+/* Animação para imagem atual */
+@keyframes animTranslateNew {
+  0% {
+    opacity: 0%;
+    rotate: 0deg;
+    filter: blur(10px);
+  }
+
+  30% {
+    opacity: 100%;
+  }
+
+  60% {
+    rotate: 1080deg;
+    opacity: 100%;
+    filter: blur(0px);
+  }
+
+  100% {
+    rotate: 1080deg;
+    opacity: 100%;
+    filter: blur(0px);
+  }
+}
